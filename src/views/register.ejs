@@ -17,8 +17,10 @@
             <input type="text" id="username" name="username" placeholder="Nhập tên người dùng" required />
 
 
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="Nhập email" required />
+            <div style="display: none;">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Nhập email" value="<%=email%>" required />
+            </div>
 
 
             <label for="password">Mật khẩu</label>

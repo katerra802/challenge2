@@ -6,8 +6,90 @@
     <title>Document</title>
 </head>
 
+<style>
+    .table-container {
+        justify-items: center;
+        margin-top: 20px;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 800px;
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    }
+
+    th,
+    td {
+        padding: 16px 20px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #4a90e2;
+        color: white;
+        font-size: 16px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f6fc;
+    }
+
+    tr:hover {
+        background-color: #dbe9ff;
+        transition: background-color 0.3s ease;
+    }
+
+    td {
+        color: #333;
+        font-size: 15px;
+    }
+</style>
+
 <body>
-    <a href="/register-user">dang ký</a>
+    <div>
+        <h1>Product List</h1>
+        <a href="/register-user">Register User</a>
+        <a href="/login">Login</a>
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Name</th>
+                    <th>City</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <%lstProducts.forEach(function(product) { %>
+                    <tr>
+                        <td>
+                            <%=product._id%>
+                        </td>
+                        <td>
+                            <%=product.name%>
+                        </td>
+                        <td>
+                            <%=product.slug%>
+                        </td>
+                        <td>
+                            <%=product.quantity%>
+                        </td>
+                        <td>
+                            <a href="">Edit</a>
+                            <a href="">Delete</a>
+                        </td>
+                    </tr>
+                    <%})%>
+            </tbody>
+        </table>
+    </div>
 </body>
 
 </html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Form Đăng Ký</title>
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body>
+    <div class="container">
+        <form class="verify-otp" action="/verify-otp" method="POST">
+            <h2>
+                Đăng Ký Tài Khoản
+            </h2>
+            <div style="display: none;">
+                <label for="email"></label>
+                <input type="email" id="email" name="email" value="<%=email%>" required />
+            </div>
+
+            <label for="otp">OTP</label>
+            <input type="number" id="otp" name="otp" placeholder="Nhập OTP" required />
+
+            <button type="submit">Nhận mã OTP</button>
+        </form>
+    </div>
+</body>
+
+</html>
