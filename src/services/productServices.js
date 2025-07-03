@@ -26,6 +26,35 @@ const productServices = {
             console.error('Error adding product:', error);
             throw error;
         }
+    },
+    getProductById: async (id) => {
+        try {
+            if (!id) {
+                throw new Error('Product ID is required');
+            }
+
+            const product = await Product.findById(id);
+            return product;
+        }
+        catch (error) {
+            console.error('Error fetching product by ID:', error);
+            return {};
+        }
+    },
+
+    getProductBySlug: async (slug) => {
+        try {
+            if (!slug) {
+                throw new Error('Product slug is required');
+            }
+
+            const product = await Product.find({ slug: slug });
+            return product;
+        }
+        catch (error) {
+            console.error('Error fetching product by ID:', error);
+            return {};
+        }
     }
 }
 
