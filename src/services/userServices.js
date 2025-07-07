@@ -34,10 +34,9 @@ const userServices = {
             throw new Error('Invalid password');
         }
 
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        console.log('User logged in successfully:', user);
-        console.log('Generated JWT token:', token);
-        return { user, token };
+        const accessToken = userServices.createToken(user, process.env.JWT_SECRET, '15'); // Set cookie for 15 minutes
+        const refreshToken = userServices.createToken(user, process.env.JWT_REFRESH_SECRET, '7d');
+        return { accessToken, refreshToken };
     },
 
     sendOTP: async (userEmail) => {
@@ -99,6 +98,23 @@ const userServices = {
             return false;
         }
 
+    },
+
+    getUsersList: async () => {
+        try {
+            const users = await User.find();
+            return users;
+        } catch (error) {
+            console.error('Error fetching users list:', error);
+            throw error;
+        }
+    },
+    createToken: (user, secret, timeToken) => {
+        if (!user || !user._id) {
+            throw new Error('Invalid user object');
+        }
+        const token = jwt.sign({ userId: user._id }, secret, { expiresIn: timeToken });
+        return token;
     }
 }
 

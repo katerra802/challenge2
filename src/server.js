@@ -1,7 +1,8 @@
 require('dotenv').config();
 const express = require('express');
-const mongooes = require('mongoose');
+const mongoose = require('mongoose');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 const viewEngine = require('./configs/viewEngine');
 const apiRouter = require('./routes/api');
 const webRouter = require('./routes/web');
@@ -16,12 +17,7 @@ viewEngine(app);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(session({
-    secret: process.env.JWT_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { maxAge: 60 * 60 * 1000 }
-}));
+app.use(cookieParser());
 
 app.use('/', webRouter);
 app.use('/v1/api', apiRouter);
@@ -37,7 +33,5 @@ const startServer = async () => {
         console.error('Error starting the server:', error);
     }
 }
-
-
 
 startServer();
