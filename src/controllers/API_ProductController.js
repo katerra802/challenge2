@@ -1,21 +1,6 @@
+const productDTO = require('../DTO/product_DTO');
 const productService = require('../services/productServices');
-const Product = require('../models/product');
-
-
-const productController = {
-    getProductPage: async (req, res) => {
-        try {
-            const products = await productService.getAllProducts(req, res);
-            if (products.length === 0) {
-                return res.status(404).send('No products found');
-            }
-            return res.status(200).json(products);
-        }
-        catch (error) {
-            console.error('Error fetching product page:', error);
-            res.status(500).send('Internal Server Error');
-        }
-    },
+const API_ProductController = {
 
     postAddProduct: async (req, res) => {
         const { name, slug, quantity } = req.body;
@@ -29,7 +14,7 @@ const productController = {
                 quantity: quantity || 0
             });
             const savedProduct = await productService.postAddProduct(product);
-            return res.status(201).json({ message: 'Product added successfully', product: savedProduct });
+            return res.status(201).json({ message: 'Product added successfully', product: new productDTO(savedProduct) });
         }
         catch (error) {
             console.error('Error adding product:', error);
@@ -37,42 +22,6 @@ const productController = {
         }
     },
 
-    getProductById: async (req, res) => {
-        const id = req.params.id;
-        try {
-            if (!id) {
-                throw new Error('Product ID is required');
-            }
-            const product = await productService.getProductById(id);
-            if (!product) {
-                return res.status(404).json({ message: 'Product not found' });
-            }
-            return res.status(200).json(product);
-        }
-        catch (error) {
-            console.error('Error fetching product by ID:', error);
-            return res.status(500).json({ message: 'Internal Server Error', error: error.message });
-        }
-    },
-
-    getProductBySlug: async (req, res) => {
-        const slug = req.params.slug;
-        try {
-            if (!slug) {
-                throw new Error('Slug Product is required');
-            }
-            const product = await productService.getProductBySlug(slug);
-            if (!product) {
-                return res.status(404).json({ message: 'Product not found' });
-            }
-            return res.status(200).json(product);
-        }
-        catch (error) {
-            console.error('Error fetching product by ID:', error);
-            return res.status(500).json({ message: 'Internal Server Error', error: error.message });
-        }
-    },
-    
     putUpdateProduct: async (req, res) => {
         const id = req.params.id;
         const { name, slug, quantity } = req.body;
@@ -93,7 +42,7 @@ const productController = {
                 product.quantity = quantity || 0;
             }
             product.save();
-            return res.status(200).json({ message: 'Product updated successfully', product: product });
+            return res.status(200).json({ message: 'Product updated successfully', product: new productDTO(product) });
         }
         catch (error) {
             console.error('Error updating product:', error);
@@ -121,4 +70,4 @@ const productController = {
     }
 }
 
-module.exports = productController;
+module.exports = API_ProductController;

@@ -34,7 +34,7 @@ const userServices = {
             throw new Error('Invalid password');
         }
 
-        const accessToken = userServices.createToken(user, process.env.JWT_SECRET, '15'); // Set cookie for 15 minutes
+        const accessToken = userServices.createToken(user, process.env.JWT_SECRET, '15m'); // Set cookie for 15 minutes
         const refreshToken = userServices.createToken(user, process.env.JWT_REFRESH_SECRET, '7d');
         return { accessToken, refreshToken };
     },
@@ -115,6 +115,24 @@ const userServices = {
         }
         const token = jwt.sign({ userId: user._id }, secret, { expiresIn: timeToken });
         return token;
+    },
+    reverseToken: (accessToken) => {
+        if (!accessToken) {
+            return res.status(401).json({ message: 'No access token provided' });
+        }
+
+        if (accessToken) {
+            try {
+                const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
+                return decoded;
+            } catch (error) {
+                console.error('Error verifying access token:', error);
+                throw new Error('Invalid access token');
+            }
+        }
+        else {
+            return null;
+        }
     }
 }
 

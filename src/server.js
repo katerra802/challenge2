@@ -10,7 +10,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const HOST_NAME = process.env.HOST_NAME || 'localhost';
 const connection = require('./configs/database');
-const session = require('express-session');
+const swaggerSpec = require('./swagger');
+const swaggerUi = require('swagger-ui-express');
 
 viewEngine(app);
 
@@ -19,7 +20,19 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
 
+//swagger setup
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    swaggerOptions: {
+        defaultModelsExpandDepth: -1,
+        defaultModelRendering: "example",
+        tryItOutEnabled: true // bật mặc định
+    }
+}));
+
+//api route
 app.use('/', webRouter);
+
+//web route
 app.use('/v1/api', apiRouter);
 
 const startServer = async () => {

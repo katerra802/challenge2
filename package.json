@@ -4,7 +4,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon ./src/server.js"
+    "dev": "nodemon --exec \"node -r dotenv/config\" src/server.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,9 +16,12 @@
     "ejs": "^3.1.10",
     "express": "5.1.0",
     "express-session": "^1.18.1",
+    "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.1",
-    "nodemailer": "^7.0.4"
+    "nodemailer": "^7.0.4",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

@@ -51,46 +51,53 @@
 <body>
     <div>
         <h1>Product List</h1>
-        <a href="/register-user">Register User</a>
-        <a href="/login">Login</a>
-        <a href="/profile/686b4594cca73dcf5fdcd328">Profile</a>
-    </div>
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Email</th>
-                    <th>Name</th>
-                    <th>City</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
+        <% if(!verify) {%>
+            <a style="font-size: 100px;" href="/login">Login</a>
 
-                <%lstProducts.forEach(function(product) { %>
-                    <tr>
-                        <td>
-                            <%=product._id%>
-                        </td>
-                        <td>
-                            <%=product.name%>
-                        </td>
-                        <td>
-                            <%=product.slug%>
-                        </td>
-                        <td>
-                            <%=product.quantity%>
-                        </td>
-                        <td>
-                            <a href="">Edit</a>
-                            <a href="">Delete</a>
-                        </td>
-                    </tr>
-                    <%})%>
-            </tbody>
-        </table>
+            <% } else {%>
+                <a href="/profile">Profile</a>
+                <%}%>
     </div>
+    <%if(lstProducts.length> 0) {%>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Email</th>
+                        <th>Name</th>
+                        <th>City</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <%lstProducts.forEach(function(product) { %>
+                        <tr>
+                            <td>
+                                <%=product._id%>
+                            </td>
+                            <td>
+                                <%=product.name%>
+                            </td>
+                            <td>
+                                <%=product.slug%>
+                            </td>
+                            <td>
+                                <%=product.quantity%>
+                            </td>
+                            <td>
+                                <a href="">Edit</a>
+                                <a href="">Delete</a>
+                            </td>
+                        </tr>
+                        <%})%>
+                </tbody>
+            </table>
+        </div>
+        <%} else {%>
+            <h1>dang nhap de xem san pham</h1>
+            <%}%>
 </body>
 
 </html>

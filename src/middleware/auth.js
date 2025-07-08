@@ -71,9 +71,7 @@ const handleRefreshToken = async (req, res, next) => {
 
         // Đặt lại cookie accessToken trong response
         res.cookie('accessToken', newAccessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            maxAge: 15 * 60 * 1000 // 15 phút
+            httpOnly: true
         });
 
         // Gắn thông tin user vào request để route tiếp theo có thể sử dụng

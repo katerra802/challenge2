@@ -19,7 +19,7 @@ router.post('/verify-otp', userController.postVerifyOTP);
 router.get('/login', userController.loginPage);
 router.post('/login-user', userController.postLogin);
 router.get('/list-users', userController.getUsersList);
-router.get('/profile/:id', authMiddleware, userController.getProfile);
+router.get('/profile', authMiddleware, userController.getProfile);
 router.post('/logout', userController.postLogout);
 //
 

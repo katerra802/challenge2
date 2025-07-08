@@ -1,8 +1,6 @@
 const userServices = require('../services/userServices');
-const User = require('../models/User');
-const jwt = require('jsonwebtoken');
 
-const userController = {
+const API_UserController = {
     refreshToken: async (req, res) => {
         try {
             const refreshtoken = req.cookies.refreshToken || req.header('Authorization')?.replace('Bearer ', '');
@@ -24,11 +22,7 @@ const userController = {
             res.status(500).json({ message: 'Failed to refresh token', error: error.message });
         }
     },
-    registerPage: userServices.getRegisterPage,
 
-    getSendOPTPage: (req, res) => {
-        res.render('sendEmail.ejs', { error: true, errmsg: null });
-    },
 
     postSendOTP: async (req, res) => {
         const { email } = req.body;
@@ -88,17 +82,13 @@ const userController = {
         }
     },
 
-    loginPage: (req, res) => {
-        res.render('login.ejs', { error: false, errmsg: null });
-    },
-
     postLogin: async (req, res) => {
         try {
             const { email, password } = req.body;
             if (!email || !password) {
-                return res.render('login.ejs', {
+                return res.status(400).json({
                     error: true,
-                    errmsg: 'Vui lòng nhập đầy đủ thông tin!'
+                    errmsg: 'Email and password are required!'
                 });
             }
 
@@ -106,58 +96,16 @@ const userController = {
             res.cookie('accessToken', accessToken, { httpOnly: true });
             res.cookie('refreshToken', refreshToken, { httpOnly: true });
 
-
-            res.redirect('/');
-        } catch (error) {
-            res.render('login.ejs', {
-                error: true,
-                errmsg: error.message
+            res.status(200).json({
+                message: 'Login successful',
+                accessToken: accessToken,
+                refreshToken: refreshToken
             });
-        }
-    },
-
-    getUsersList: async (req, res) => {
-        try {
-            const users = await userServices.getUsersList();
-            // res.status(200).json(users);
-            res.render('usersList.ejs', { users: users });
         } catch (error) {
-            console.error('Error fetching users list:', error);
-            res.status(500).json({ message: 'Failed to fetch users list', error: error.message });
-        }
-    },
-
-    APIgetUsersList: async (req, res) => {
-        try {
-            const users = await userServices.getUsersList();
-            res.status(200).json(users);
-            // res.render('usersList.ejs', { users: users });
-        } catch (error) {
-            console.error('Error fetching users list:', error);
-            res.status(500).json({ message: 'Failed to fetch users list', error: error.message });
-        }
-    },
-
-    getProfile: async (req, res) => {
-        try {
-            const accessToken = req.cookies.accessToken || req.header('Authorization')?.replace('Bearer ', '');
-
-            const decoded = userServices.reverseToken(accessToken);
-
-            if (!decoded || !decoded.userId) {
-                return res.status(401).json({ message: 'Invalid access token' });
-            }
-
-            const userId = decoded.userId;
-            const user = await User.findById(userId);
-            if (!user) {
-                return res.status(404).json({ message: 'User not found' });
-            }
-            res.render('profilePage.ejs', { email: user.email, name: user.username });
-        }
-        catch (error) {
-            console.error('Error fetching user profile:', error);
-            res.status(500).json({ message: 'Failed to fetch user profile', error: error.message });
+            res.status(401).json({
+                error: true,
+                errmsg: 'Invalid email or password!'
+            });
         }
     },
 
@@ -171,7 +119,6 @@ const userController = {
             res.status(500).json({ message: 'Logout failed', error: error.message });
         }
     }
-
 }
 
-module.exports = userController;
+module.exports = API_UserController;
