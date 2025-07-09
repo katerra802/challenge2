@@ -74,7 +74,8 @@ const userController = {
             const user = new User({
                 username: req.body.username,
                 password: req.body.password,
-                email: req.body.email
+                email: req.body.email,
+                role: 'user'
             });
             const results = await userServices.postRegister(user);
 

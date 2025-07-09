@@ -10,7 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const HOST_NAME = process.env.HOST_NAME || 'localhost';
 const connection = require('./configs/database');
-const swaggerSpec = require('./swagger');
+const swaggerSpec = require('./configs/swagger');
 const swaggerUi = require('swagger-ui-express');
 
 viewEngine(app);

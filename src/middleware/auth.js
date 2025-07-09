@@ -1,28 +1,8 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const userController = require('../controllers/userController');
+const User = require('../models/User');
 
 const authMiddleware = (req, res, next) => {
-    // // Kiểm tra token từ header Authorization hoặc cookie
-    // let token = req.header('Authorization')?.replace('Bearer ', '');
-
-    // if (!token && req.cookies) {
-    //     token = req.cookies.accessToken;
-    // }
-
-    // if (!token) {
-    //     return res.status(401).json({ error: 'Access denied. No token provided.' });
-    // }
-
-    // try {
-    //     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    //     req.user = decoded;
-    //     next();
-    // }
-    // catch (err) {
-    //     return res.status(401).json({ error: 'Invalid token' });
-    // }
-
     let accessToken = req.header('Authorization')?.replace('Bearer ', '');
     if (!accessToken && req.cookies) {
         accessToken = req.cookies.accessToken;
@@ -34,6 +14,7 @@ const authMiddleware = (req, res, next) => {
     try {
         const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
         req.user = decoded;
+        console.log('User decoded from access token:', decoded); // Debug log
         return next();
     } catch (error) {
         if (error.name === 'TokenExpiredError' || error.name === 'JsonWebTokenError') {
@@ -62,9 +43,14 @@ const handleRefreshToken = async (req, res, next) => {
     try {
         const decodedRefresh = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
 
+        const user = await User.findById(decodedRefresh.userId);
+        if (!user) {
+            return res.status(403).json({ error: 'Người dùng không tồn tại hoặc đã bị xóa.' });
+        }
+
         // Tạo một Access Token MỚI
         const newAccessToken = jwt.sign(
-            { userId: decodedRefresh.userId, name: decodedRefresh.name /* thêm các thông tin khác nếu cần */ },
+            { userId: user._id, name: user.username, role: user.role },
             process.env.JWT_SECRET,
             { expiresIn: '15m' }
         );
@@ -75,7 +61,9 @@ const handleRefreshToken = async (req, res, next) => {
         });
 
         // Gắn thông tin user vào request để route tiếp theo có thể sử dụng
-        req.user = { userId: decodedRefresh.userId, name: decodedRefresh.name };
+        req.user = user;
+
+        console.log('User from refresh token:', req.user); // Debug log
         // console.log('Refresh Token thành công, đã tạo Access Token mới.');
 
         // Đi tiếp tới route cần bảo vệ

@@ -90,7 +90,8 @@ const userServices = {
                 console.error('OTP not found for the provided email and code');
                 return false;
             }
-            otpEntry.deleteOne({ email: userEmail, otp: otpCode });
+            await otpEntry.deleteOne({ email: userEmail, otp: otpCode });
+            console.log('OTP verified successfully for email:', userEmail);
             return true;
         }
         catch (error) {
@@ -113,7 +114,11 @@ const userServices = {
         if (!user || !user._id) {
             throw new Error('Invalid user object');
         }
-        const token = jwt.sign({ userId: user._id }, secret, { expiresIn: timeToken });
+        const token = jwt.sign({
+            userId: user._id,
+            name: user.username,
+            role: user.role
+        }, secret, { expiresIn: timeToken });
         return token;
     },
     reverseToken: (accessToken) => {

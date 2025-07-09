@@ -4,6 +4,7 @@ const router = express.Router();
 const homeController = require('../controllers/homeController');
 const userController = require('../controllers/userController');
 const authMiddleware = require('../middleware/auth');
+const userValidation = require('../DTO/user_DTO');
 
 router.get('/', homeController.homePage);
 
@@ -19,7 +20,7 @@ router.post('/verify-otp', userController.postVerifyOTP);
 router.get('/login', userController.loginPage);
 router.post('/login-user', userController.postLogin);
 router.get('/list-users', userController.getUsersList);
-router.get('/profile', authMiddleware, userController.getProfile);
+router.get('/profile', authMiddleware, authMiddleware, userController.getProfile);
 router.post('/logout', userController.postLogout);
 //
 

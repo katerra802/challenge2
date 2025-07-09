@@ -1,4 +1,6 @@
 const userServices = require('../services/userServices');
+const UserMapper = require('../mappers/user_mappers');
+const userOutPutDTO = require('../DTO/output/userDTO');
 
 const API_UserController = {
     refreshToken: async (req, res) => {
@@ -72,9 +74,9 @@ const API_UserController = {
             });
             const results = await userServices.postRegister(user);
 
-            res.render('login.ejs', {
-                error: false,
-                errmsg: null
+            res.status(201).json({
+                message: 'Registration successful',
+                user: UserMapper.toOutputDTO(results)
             });
         } catch (error) {
             console.error('Error in postRegister controller:', error);
@@ -113,12 +115,23 @@ const API_UserController = {
         try {
             res.clearCookie('accessToken');
             res.clearCookie('refreshToken');
-            res.redirect('/');
+            res.status(200).json({ message: 'Logout successful' });
         } catch (error) {
             console.error('Error during logout:', error);
             res.status(500).json({ message: 'Logout failed', error: error.message });
         }
-    }
+    },
+
+    getUsersList: async (req, res) => {
+        try {
+            const users = await userServices.getUsersList();
+            res.status(200).json(UserMapper.toOutputListDTO(users));
+            // res.render('usersList.ejs', { users: users });
+        } catch (error) {
+            console.error('Error fetching users list:', error);
+            res.status(500).json({ message: 'Failed to fetch users list', error: error.message });
+        }
+    },
 }
 
 module.exports = API_UserController;
